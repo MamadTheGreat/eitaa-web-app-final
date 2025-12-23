@@ -3,11 +3,11 @@ Education endpoints - Video management
 """
 from fastapi import APIRouter, HTTPException
 from typing import List
-from models import VideosResponse, VideoResponse
-from services.google_drive import drive_service
-from services.cache import cache_service
-from utils.validators import validate_disease_type
-from utils.logger import setup_logger
+from ..models import VideosResponse, VideoResponse
+from ..services.google_drive import drive_service
+from ..services.cache import cache_service
+from ..utils.validators import validate_disease_type
+from ..utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 
@@ -58,7 +58,7 @@ async def get_diseases():
     """
     Get list of available diseases
     """
-    from config import get_settings
+    from ..config import get_settings
     settings = get_settings()
     
     diseases = [
