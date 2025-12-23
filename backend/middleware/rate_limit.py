@@ -5,8 +5,8 @@ from datetime import datetime
 from typing import Dict, List
 from fastapi import HTTPException, Request
 from starlette.middleware.base import BaseHTTPMiddleware
-from config import get_settings
-from utils.logger import setup_logger
+from ..config import get_settings
+from ..utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 
