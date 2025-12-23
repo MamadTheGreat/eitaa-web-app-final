@@ -3,7 +3,7 @@ Cache management service
 """
 from datetime import datetime
 from typing import Optional, Dict, Any
-from config import get_settings
+from ..config import get_settings
 
 class CacheService:
     """Simple in-memory cache service"""
