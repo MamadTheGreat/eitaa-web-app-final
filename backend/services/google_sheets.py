@@ -10,8 +10,8 @@ import pytz
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from config import get_settings
-from utils.logger import setup_logger
+from ..config import get_settings
+from ..utils.logger import setup_logger
 
 logger = setup_logger(__name__)
 
