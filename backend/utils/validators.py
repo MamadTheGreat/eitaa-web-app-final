@@ -45,6 +45,6 @@ def validate_user_id(user_id: str) -> bool:
 
 def validate_disease_type(disease: str) -> bool:
     """Validate disease type"""
-    from config import get_settings
+    from ..config import get_settings
     settings = get_settings()
     return disease in settings.DISEASE_FOLDERS
