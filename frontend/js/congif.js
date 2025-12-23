@@ -4,7 +4,7 @@
 
 const CONFIG = {
     // API Configuration
-    API_URL: 'https://web-app-eitaa.onrender.com',
+    API_URL: 'https://eitaa-web-app-final.onrender.com',
     
     // Cache Duration (milliseconds)
     CACHE_DURATION: 30 * 60 * 1000, // 30 minutes
