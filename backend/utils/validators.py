@@ -7,8 +7,8 @@ def validate_blood_sugar(value: str) -> Optional[str]:
     """Validate blood sugar value"""
     try:
         num = float(value)
-        if not (20 <= num <= 600):
-            return 'مقدار قند باید بین 20 تا 600 باشد'
+        if not (20 <= num <= 1500):
+            return 'مقدار قند باید بین 20 تا 1500 باشد'
         return None
     except ValueError:
         return 'مقدار قند نامعتبر است'
@@ -19,10 +19,10 @@ def validate_blood_pressure(systolic: str, diastolic: str) -> Optional[str]:
         sys = float(systolic)
         dia = float(diastolic)
         
-        if not (70 <= sys <= 250):
-            return 'فشار سیستولیک باید بین 70 تا 250 باشد'
-        if not (40 <= dia <= 150):
-            return 'فشار دیاستولیک باید بین 40 تا 150 باشد'
+        if not (70 <= sys <= 300):
+            return 'فشار سیستولیک باید بین 70 تا 300 باشد'
+        if not (30 <= dia <= 200):
+            return 'فشار دیاستولیک باید بین 30 تا 200 باشد'
         if sys <= dia:
             return 'فشار سیستولیک باید بزرگتر از دیاستولیک باشد'
         return None
@@ -33,8 +33,8 @@ def validate_weight(value: str) -> Optional[str]:
     """Validate weight value"""
     try:
         num = float(value)
-        if not (20 <= num <= 300):
-            return 'وزن باید بین 20 تا 300 کیلوگرم باشد'
+        if not (10 <= num <= 200):
+            return 'وزن باید بین 10 تا 200 کیلوگرم باشد'
         return None
     except ValueError:
         return 'وزن نامعتبر است'
