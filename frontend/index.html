@@ -9,6 +9,9 @@
     <script src="https://unpkg.com/@babel/standalone@7.23.5/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         body {
@@ -56,7 +59,9 @@
             MessageCircle: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>,
             Mail: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>,
             MapPin: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>,
-            Maximize: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+            Maximize: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>,
+            Download: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>,
+            Printer: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
         };
 
         // ==================== Validators ====================
@@ -99,6 +104,67 @@
         const ChartComponent = ({ title, data, type, unit }) => {
             const chartRef = useRef(null);
             const chartInstance = useRef(null);
+            const containerRef = useRef(null);
+
+            const downloadChart = async () => {
+                if (!containerRef.current) return;
+                
+                try {
+                    const canvas = await html2canvas(containerRef.current, {
+                        backgroundColor: '#ffffff',
+                        scale: 2
+                    });
+                    
+                    const imgData = canvas.toDataURL('image/png');
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF({
+                        orientation: 'landscape',
+                        unit: 'px',
+                        format: [canvas.width, canvas.height]
+                    });
+                    
+                    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+                    pdf.save(`${title}.pdf`);
+                } catch (error) {
+                    console.error('خطا در دانلود:', error);
+                    alert('خطا در دانلود نمودار');
+                }
+            };
+
+            const printChart = () => {
+                if (!chartInstance.current) return;
+                const imageUrl = chartInstance.current.toBase64Image();
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html dir="rtl">
+                        <head>
+                            <title>${title}</title>
+                            <style>
+                                body { 
+                                    font-family: 'Vazirmatn', sans-serif; 
+                                    text-align: center; 
+                                    padding: 20px;
+                                }
+                                h1 { margin-bottom: 20px; }
+                                img { max-width: 100%; height: auto; }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>${title}</h1>
+                            <img src="${imageUrl}" />
+                            <script>
+                                window.onload = function() {
+                                    window.print();
+                                    window.onafterprint = function() {
+                                        window.close();
+                                    };
+                                };
+                            <\/script>
+                        </body>
+                    </html>
+                `);
+                printWindow.document.close();
+            };
 
             useEffect(() => {
                 if (!chartRef.current || !data || data.length === 0) return;
@@ -109,13 +175,18 @@
                     chartInstance.current.destroy();
                 }
 
+                // دسترسی به ChartDataLabels از window
+                const ChartDataLabels = window.ChartDataLabels;
+                if (ChartDataLabels) {
+                    Chart.register(ChartDataLabels);
+                }
+
                 let datasets = [];
                 
                 if (type === 'blood_sugar') {
                     const fastingData = data.filter(d => d.type === 'قند ناشتا');
                     const postprandialData = data.filter(d => d.type === 'قند بعد از غذا');
                     
-                    // ترتیب داده‌ها بر اساس تاریخ
                     const sortData = (arr) => arr.sort((a, b) => {
                         const dateA = new Date(a.date.split('-').reverse().join('-') + ' ' + a.time);
                         const dateB = new Date(b.date.split('-').reverse().join('-') + ' ' + b.time);
@@ -131,18 +202,31 @@
                             data: sortedFasting.map(d => parseFloat(d.value)),
                             borderColor: 'rgb(59, 130, 246)',
                             backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                            tension: 0.4
+                            tension: 0.4,
+                            datalabels: {
+                                color: 'rgb(59, 130, 246)',
+                                font: { family: 'Vazirmatn', size: 11, weight: 'bold' },
+                                anchor: 'end',
+                                align: 'top',
+                                offset: 4
+                            }
                         },
                         {
                             label: 'قند بعد از غذا',
                             data: sortedPostprandial.map(d => parseFloat(d.value)),
                             borderColor: 'rgb(16, 185, 129)',
                             backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                            tension: 0.4
+                            tension: 0.4,
+                            datalabels: {
+                                color: 'rgb(16, 185, 129)',
+                                font: { family: 'Vazirmatn', size: 11, weight: 'bold' },
+                                anchor: 'end',
+                                align: 'bottom',
+                                offset: 4
+                            }
                         }
                     ];
                     
-                    // استفاده از labels مشترک
                     const allLabels = [...new Set([
                         ...sortedFasting.map(d => `${d.date} ${d.time}`),
                         ...sortedPostprandial.map(d => `${d.date} ${d.time}`)
@@ -176,6 +260,10 @@
                                     textDirection: 'rtl',
                                     titleFont: { family: 'Vazirmatn' },
                                     bodyFont: { family: 'Vazirmatn' }
+                                },
+                                datalabels: {
+                                    display: true,
+                                    formatter: (value) => value ? value : ''
                                 }
                             },
                             scales: {
@@ -221,14 +309,30 @@
                             data: systolicData,
                             borderColor: 'rgb(239, 68, 68)',
                             backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                            tension: 0.4
+                            tension: 0.4,
+                            datalabels: {
+                                color: 'rgb(239, 68, 68)',
+                                font: { family: 'Vazirmatn', size: 11, weight: 'bold' },
+                                anchor: 'end',
+                                align: 'top',
+                                offset: 4,
+                                formatter: (value) => value.y
+                            }
                         },
                         {
                             label: 'فشار دیاستولیک',
                             data: diastolicData,
                             borderColor: 'rgb(251, 146, 60)',
                             backgroundColor: 'rgba(251, 146, 60, 0.1)',
-                            tension: 0.4
+                            tension: 0.4,
+                            datalabels: {
+                                color: 'rgb(251, 146, 60)',
+                                font: { family: 'Vazirmatn', size: 11, weight: 'bold' },
+                                anchor: 'end',
+                                align: 'bottom',
+                                offset: 4,
+                                formatter: (value) => value.y
+                            }
                         }
                     ];
                 } else if (type === 'weight') {
@@ -238,7 +342,15 @@
                             data: data.map(d => ({ x: `${d.date} ${d.time}`, y: parseFloat(d.value) })),
                             borderColor: 'rgb(139, 92, 246)',
                             backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                            tension: 0.4
+                            tension: 0.4,
+                            datalabels: {
+                                color: 'rgb(139, 92, 246)',
+                                font: { family: 'Vazirmatn', size: 11, weight: 'bold' },
+                                anchor: 'end',
+                                align: 'top',
+                                offset: 4,
+                                formatter: (value) => value.y
+                            }
                         }
                     ];
                 }
@@ -260,6 +372,9 @@
                                 textDirection: 'rtl',
                                 titleFont: { family: 'Vazirmatn' },
                                 bodyFont: { family: 'Vazirmatn' }
+                            },
+                            datalabels: {
+                                display: true
                             }
                         },
                         scales: {
@@ -297,9 +412,27 @@
             }, [data, type, unit]);
 
             return (
-                <div className="bg-white p-6 rounded-xl shadow-lg mb-6">
-                    <h4 className="text-xl font-bold text-gray-800 mb-4">{title}</h4>
-                    <div style={{ height: '300px' }}>
+                <div ref={containerRef} className="bg-white p-6 rounded-xl shadow-lg mb-6">
+                    <div className="flex justify-between items-center mb-4">
+                        <h4 className="text-xl font-bold text-gray-800">{title}</h4>
+                        <div className="flex gap-2">
+                            <button 
+                                onClick={downloadChart}
+                                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all flex items-center gap-2 text-sm"
+                            >
+                                <Icons.Download />
+                                دانلود PDF
+                            </button>
+                            <button 
+                                onClick={printChart}
+                                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-all flex items-center gap-2 text-sm"
+                            >
+                                <Icons.Printer />
+                                پرینت
+                            </button>
+                        </div>
+                    </div>
+                    <div style={{ height: '400px' }}>
                         <canvas ref={chartRef}></canvas>
                     </div>
                 </div>
@@ -405,13 +538,16 @@
                             <>
                                 <h3 className="text-xl md:text-2xl font-bold text-blue-900 mb-4">{selectedVideo.name}</h3>
                                 <div className="bg-white rounded-xl p-4 shadow-lg mb-4">
-                                    <div className="relative">
+                                    <div className="relative" style={{ paddingBottom: '56.25%', height: 0, overflow: 'hidden' }}>
                                         <iframe 
                                             src={selectedVideo.url} 
-                                            className="w-full h-64 md:h-96 rounded-lg" 
-                                            allow="autoplay; fullscreen" 
+                                            className="absolute top-0 left-0 w-full h-full rounded-lg" 
+                                            allow="autoplay; fullscreen; picture-in-picture" 
                                             allowFullScreen
+                                            webkitallowfullscreen="true"
+                                            mozallowfullscreen="true"
                                             title={selectedVideo.name}
+                                            style={{ border: 'none' }}
                                         ></iframe>
                                     </div>
                                 </div>
