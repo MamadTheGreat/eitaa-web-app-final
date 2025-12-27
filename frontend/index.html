@@ -180,25 +180,23 @@
                         logging: false
                     });
                     
-                    const imgData = canvas.toDataURL('image/png');
+                    // تبدیل به JPG و دانلود
+                    canvas.toBlob((blob) => {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `${title.replace(/\s+/g, '_')}.jpg`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(url);
+                        
+                        // نمایش پیام موفقیت
+                        setTimeout(() => {
+                            alert(`✅ ${title} دانلود شد`);
+                        }, 100);
+                    }, 'image/jpeg', 0.95);
                     
-                    const { jsPDF } = window.jspdf;
-                    if (!jsPDF) {
-                        alert('خطا: ابزار PDF بارگذاری نشده است');
-                        return;
-                    }
-                    
-                    const pdf = new jsPDF({
-                        orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
-                        unit: 'px',
-                        format: [canvas.width, canvas.height]
-                    });
-                    
-                    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-                    pdf.save(`${title.replace(/\s+/g, '_')}.pdf`);
-                    
-                    // نمایش پیام موفقیت
-                    alert(`✅ ${title} دانلود شد`);
                 } catch (error) {
                     console.error('خطا در دانلود:', error);
                     alert('خطا در دانلود نمودار. لطفاً دوباره تلاش کنید.');
