@@ -194,8 +194,8 @@
                             data: sortedFasting.map(d => parseFloat(d.value)),
                             borderColor: 'rgb(59, 130, 246)',
                             backgroundColor: 'rgba(59, 130, 246, 0.5)',
-                            pointRadius: 6,
-                            pointHoverRadius: 8,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
                             tension: 0.4
                         },
                         {
@@ -203,8 +203,8 @@
                             data: sortedPostprandial.map(d => parseFloat(d.value)),
                             borderColor: 'rgb(16, 185, 129)',
                             backgroundColor: 'rgba(16, 185, 129, 0.5)',
-                            pointRadius: 6,
-                            pointHoverRadius: 8,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
                             tension: 0.4
                         }
                     ];
@@ -240,14 +240,14 @@
                                     },
                                     font: {
                                         family: 'Vazirmatn',
-                                        size: 11,
+                                        size: 10,
                                         weight: 'bold'
                                     },
                                     anchor: 'end',
                                     align: function(context) {
                                         return context.datasetIndex === 0 ? 'top' : 'bottom';
                                     },
-                                    offset: 4,
+                                    offset: 2,
                                     formatter: function(value) {
                                         return value ? Math.round(value) : '';
                                     }
@@ -309,8 +309,8 @@
                             data: systolicData,
                             borderColor: 'rgb(239, 68, 68)',
                             backgroundColor: 'rgba(239, 68, 68, 0.5)',
-                            pointRadius: 6,
-                            pointHoverRadius: 8,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
                             tension: 0.4
                         },
                         {
@@ -318,8 +318,8 @@
                             data: diastolicData,
                             borderColor: 'rgb(251, 146, 60)',
                             backgroundColor: 'rgba(251, 146, 60, 0.5)',
-                            pointRadius: 6,
-                            pointHoverRadius: 8,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
                             tension: 0.4
                         }
                     ];
@@ -330,8 +330,8 @@
                             data: data.map(d => ({ x: `${d.date} ${d.time}`, y: parseFloat(d.value) })),
                             borderColor: 'rgb(139, 92, 246)',
                             backgroundColor: 'rgba(139, 92, 246, 0.5)',
-                            pointRadius: 6,
-                            pointHoverRadius: 8,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
                             tension: 0.4
                         }
                     ];
@@ -352,14 +352,14 @@
                                 },
                                 font: {
                                     family: 'Vazirmatn',
-                                    size: 11,
+                                    size: 10,
                                     weight: 'bold'
                                 },
                                 anchor: 'end',
                                 align: function(context) {
                                     return context.datasetIndex === 0 ? 'top' : 'bottom';
                                 },
-                                offset: 4,
+                                offset: 2,
                                 formatter: function(value) {
                                     return value && value.y ? Math.round(value.y) : '';
                                 }
@@ -416,7 +416,7 @@
                 <div ref={containerRef} className="bg-white p-6 rounded-xl shadow-lg mb-6">
                     <h4 className="text-xl font-bold text-gray-800 mb-4">{title}</h4>
                     <div style={{ height: '400px', overflowX: 'auto', overflowY: 'hidden' }}>
-                        <div style={{ minWidth: data.length > 10 ? `${data.length * 60}px` : '100%', height: '400px' }}>
+                        <div style={{ minWidth: data.length > 10 ? `${data.length * 30}px` : '100%', height: '400px' }}>
                             <canvas ref={chartRef}></canvas>
                         </div>
                     </div>
