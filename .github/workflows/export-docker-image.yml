@@ -24,7 +24,7 @@ jobs:
       run: docker save borgheimohammad/eittawebapp:latest -o eittawebapp.tar
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: eittawebapp-tar
         path: eittawebapp.tar
