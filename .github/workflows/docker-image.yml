@@ -24,4 +24,4 @@ jobs:
         context: .
         file: docker/Dockerfile
         push: true
-        tags: borgheimohammad/etta.webapp:latest
+        tags: borgheimohammad/eittawebapp:latest
